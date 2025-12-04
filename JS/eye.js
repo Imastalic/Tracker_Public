@@ -1,9 +1,10 @@
-async function CheckFollowersCount() {
-    let url = 'https://instagram-scraper-20251.p.rapidapi.com/userfollowers/?username_or_id=__mherrr';
+async function CheckFollowersCount(username) {
+    let API_KEY;
+    let url = `https://instagram-scraper-20251.p.rapidapi.com/userfollowers/?username_or_id=${username}`;
     const options = {
       method: 'GET',
       headers: {
-        'x-rapidapi-key': 'fc13cee4d5mshfdd3b7b20b193bep1d4a8ajsncbd396eaa2a7', // --> mheaabbcc@gmail.com
+        'x-rapidapi-key': API_KEY,
         'x-rapidapi-host': 'instagram-scraper-20251.p.rapidapi.com'
       }
 };
@@ -23,7 +24,7 @@ async function CheckFollowersCount() {
     if (!nextToken) break;
 
     // update URL for the next page
-    url = `https://instagram-scraper-20251.p.rapidapi.com/userfollowers/?username_or_id=__mherrr&pagination_token=${nextToken}`;
+    url = `https://instagram-scraper-20251.p.rapidapi.com/userfollowers/?username_or_id=${username}&pagination_token=${nextToken}`;
   }
 
   return allFollowers.length

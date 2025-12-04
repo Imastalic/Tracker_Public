@@ -14,6 +14,7 @@ const bot = new TelegramBot(token , {polling : true})
 const start = () => {
 
     // GLOBAL state (doesn't reset per message)
+let username // --> instagram username here
 let PASSWORD // --> IMPORTANT !!! create your password, and bot will want it after you type /start
 let passwordCorrect = false;
 let waitingPassword = false;
@@ -94,8 +95,6 @@ so for example by typing /followerscount you will get 115 instead of 116.Don't f
         else if (text === `/cancel`) {
 
             cancelled = true;
-            // console.log(cancelled);
-            
             clearInterval(intervalId);
             intervalId = null;
             return bot.sendMessage(chatid, "Daily automatic updates disabled.");
@@ -104,7 +103,7 @@ so for example by typing /followerscount you will get 115 instead of 116.Don't f
 
         if (!intervalId) {
                 intervalId = setInterval(async () => {
-                    const count = await CheckFollowersCount();
+                    const count = await CheckFollowersCount(username);
                     if (typeof count !== "string" && typeof count !== "number") {
                         return bot.sendMessage(chatid, "Your API subscription ended.");
                     }
@@ -113,7 +112,7 @@ so for example by typing /followerscount you will get 115 instead of 116.Don't f
                     if (Number(count) !== Number(prev)) {
                         localStorage.setItem('myfollowers_length', count);
 
-                        const av = await getAllFollowers();
+                        const av = await getAllFollowers(username);
                         if (typeof av !== "object") {
                             return bot.sendMessage(chatid, "Your subscription ended.");
                         }
@@ -135,7 +134,7 @@ so for example by typing /followerscount you will get 115 instead of 116.Don't f
             return bot.sendMessage(chatid , command_text)
         }else if (text === `/update`) {
            await bot.sendMessage(chatid , `please wait, checking followers may take few seconds...`)
-           getAllFollowers().then(av => {
+           getAllFollowers(username).then(av => {
 
             if (typeof av !== "object") {
                 return bot.sendMessage(chatid , `your subscription plan had ended, please update it on https://rapidapi.com/DavidGelling/api/instagram-scraper-20251/playground/apiendpoint_468cd28f-1103-44c9-8492-9495ad57a61f`)
